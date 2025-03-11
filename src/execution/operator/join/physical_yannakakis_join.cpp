@@ -32,17 +32,16 @@ namespace duckdb {
 PhysicalYannakakisJoin::PhysicalYannakakisJoin(LogicalOperator &op, unique_ptr<PhysicalOperator> left,
     unique_ptr<PhysicalOperator> right, vector<JoinCondition> cond, 
     JoinType join_type, idx_t estimated_cardinality)
-: PhysicalComparisonJoin(op, PhysicalOperatorType::HASH_JOIN, std::move(cond), join_type, estimated_cardinality) {
+    : PhysicalComparisonJoin(op, PhysicalOperatorType::HASH_JOIN, std::move(cond), join_type, estimated_cardinality) {
 
-children.push_back(std::move(left));
-children.push_back(std::move(right));
+    children.push_back(std::move(left));
+    children.push_back(std::move(right));
 
-// Collect types for join conditions
-for (auto &condition : conditions) {
-condition_types.push_back(condition.left->return_type);
+    // Collect types for join conditions
+    for (auto &condition : conditions) {
+        condition_types.push_back(condition.left->return_type);
+    }
 }
-}
-
 
 
 //===--------------------------------------------------------------------===//
