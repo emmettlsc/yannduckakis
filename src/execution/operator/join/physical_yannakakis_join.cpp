@@ -224,7 +224,17 @@ void PhysicalYannakakisJoin::PerformSemiJoin(YannakakisGlobalSinkState &state,
     hash_table->finalized = true;
     
     // Create a new data collection for the filtered target relation
-    auto filtered_target = make_uniq<TupleDataCollection>(state.context, target_data.GetLayout().GetTypes());
+    // Get the buffer manager from the context
+    auto &buffer_manager = BufferManager::GetBufferManager(context);
+    
+    // Create a TupleDataLayout using the target data types
+    TupleDataLayout layout;
+    const auto &target_types = target_data.GetLayout().GetTypes();
+    layout.Initialize(target_types);
+    
+    // Now create the collection with the proper parameters
+    auto filtered_target = make_uniq<TupleDataCollection>(buffer_manager, layout);
+    
     TupleDataAppendState target_append_state;
     filtered_target->InitializeAppend(target_append_state);
     
@@ -280,7 +290,7 @@ void PhysicalYannakakisJoin::PerformSemiJoin(YannakakisGlobalSinkState &state,
         }
     }
     
-    // Finalize and replace the original target with the filtered one
+    // Replace the original target with the filtered one
     state.relations_data[target_idx] = std::move(filtered_target);
 }
 
