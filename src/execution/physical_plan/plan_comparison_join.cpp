@@ -6,6 +6,8 @@
 #include "duckdb/execution/operator/join/physical_iejoin.hpp"
 #include "duckdb/execution/operator/join/physical_nested_loop_join.hpp"
 #include "duckdb/execution/operator/join/physical_piecewise_merge_join.hpp"
+//cockeel1: include the new join operator
+#include "duckdb/execution/operator/join/physical_yannakakis_join.hpp"
 #include "duckdb/execution/operator/scan/physical_table_scan.hpp"
 #include "duckdb/execution/physical_plan_generator.hpp"
 #include "duckdb/function/table/table_scan.hpp"
@@ -68,7 +70,7 @@ unique_ptr<PhysicalOperator> PhysicalPlanGenerator::PlanComparisonJoin(LogicalCo
 	unique_ptr<PhysicalOperator> plan;
 	//cockeel1: join type specify here
 	if (use_yannakakis && !prefer_range_joins) {
-		// Yannakakis optimization
+		// Yannakakis join operator
 		plan = make_uniq<PhysicalYannakakisJoin>(
 		    op, std::move(left), std::move(right), std::move(op.conditions), op.join_type, op.estimated_cardinality);
 		return plan; 
