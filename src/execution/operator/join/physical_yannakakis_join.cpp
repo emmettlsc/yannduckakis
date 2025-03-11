@@ -69,19 +69,22 @@ public:
 class YannakakisLocalSinkState : public LocalSinkState {
 public:
     YannakakisLocalSinkState(const PhysicalYannakakisJoin &op, ClientContext &context)
-        : join_key_executor(context) {
-        auto &allocator = BufferAllocator::Get(context);
-        
-        // Set up for extracting join keys from the right side
-        for (auto &cond : op.conditions) {
-            join_key_executor.AddExpression(*cond.right);
-        }
-        join_keys.Initialize(allocator, op.condition_types);
-        
-        // Initialize append state for the relation
-        relation_data = make_uniq<TupleDataCollection>(context, op.children[1]->types);
-        relation_data->InitializeAppend(append_state);
+    : join_key_executor(context) {
+    auto &allocator = BufferAllocator::Get(context);
+    
+    // Set up for extracting join keys from the right side
+    for (auto &cond : op.conditions) {
+        join_key_executor.AddExpression(*cond.right);
     }
+    join_keys.Initialize(allocator, op.condition_types);
+    
+    // Initialize append state for the relation
+    auto &buffer_manager = BufferManager::GetBufferManager(context);
+    TupleDataLayout layout;
+    layout.Initialize(op.children[1]->types);
+    relation_data = make_uniq<TupleDataCollection>(buffer_manager, layout);
+    relation_data->InitializeAppend(append_state);
+}
 
     ExpressionExecutor join_key_executor;
     DataChunk join_keys;
@@ -90,6 +93,8 @@ public:
     unique_ptr<TupleDataCollection> relation_data;
     TupleDataAppendState append_state;
 };
+
+
 
 unique_ptr<GlobalSinkState> PhysicalYannakakisJoin::GetGlobalSinkState(ClientContext &context) const {
     return make_uniq<YannakakisGlobalSinkState>(*this, context);
