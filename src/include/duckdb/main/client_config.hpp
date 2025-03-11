@@ -27,6 +27,11 @@ typedef std::function<unique_ptr<PhysicalResultCollector>(ClientContext &context
     get_result_collector_t;
 
 struct ClientConfig {
+	//! cockeel1: yannikakis toggle
+	bool use_yannakakis_join = true;
+	//! cockeel1: yannikakis parallel toggle
+	bool use_parallel_yannakakis_join = false;
+	
 	//! The home directory used by the system (if any)
 	string home_directory;
 	//! If the query profiler is enabled or not.

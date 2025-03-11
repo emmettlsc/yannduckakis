@@ -10,7 +10,4 @@ This project attempts to implement a **parallel version of the Yannakakis algori
 
 ## Installation (TODO)
 
-### **1. Clone the Repository**
-```sh
-git clone https://github.com/YOUR_USERNAME/ParallelYannakakis.git
-cd ParallelYannakakis
+(following official instructions still works)

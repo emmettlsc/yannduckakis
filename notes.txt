@@ -1,0 +1,6 @@
+https://github.com/Emmettlsc/yannduckakis.git
+
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+
+
+for result collection: https://duckdb.org/docs/stable/dev/profiling
